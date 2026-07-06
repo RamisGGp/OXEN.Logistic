@@ -469,7 +469,6 @@
         const confirmPasswordInput = document.getElementById('confirmPassword');
         const termsInput = document.getElementById('terms');
 
-        // Mostrar / ocultar contraseña (aplica a ambos campos de contraseña)
         document.querySelectorAll('.toggle-password').forEach(btn => {
             btn.addEventListener('click', () => {
                 const target = document.getElementById(btn.dataset.target);
@@ -521,7 +520,6 @@
 
             if (!valido) return;
 
-            // Aquí más adelante se conectará con el backend real para crear la cuenta.
             showToast('Cuenta creada correctamente. Redirigiendo al inicio de sesión...');
             setTimeout(() => { window.location.href = 'login.html'; }, 1800);
         });
@@ -540,9 +538,6 @@
             toastTimeout = setTimeout(() => toast.classList.remove('show'), 3000);
         }
 
-        /* ===================================================
-           TEMA CLARO / OSCURO
-        =================================================== */
         const themeToggleBtn = document.getElementById('themeToggle');
         const themeIcon = document.getElementById('themeIcon');
 
