@@ -6,9 +6,15 @@
     <title>OXEN - Monitoreo Inteligente de Ganado</title>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        (function () {
+            if (localStorage.getItem('oxen-theme') === 'light') {
+                document.documentElement.classList.add('light-theme');
+            }
+        })();
+    </script>
     
     <style>
-        /* ================= VARIABLES Y RESET ================= */
         :root {
             --bg-color: #0b110d;
             --card-bg: #111a14;
@@ -17,13 +23,37 @@
             --text-main: #ffffff;
             --text-muted: #8e9e93;
             --border-color: #1f2d24;
+            --border-hover: #26382d;
+            --input-bg: #0d1410;
+            --icon-bg: #112017;
+            --map-bg: #b0b4b1;
+            --error-red: #e74c3c;
+            --toggle-icon: "\f186";
         }
+
+        html.light-theme {
+            --bg-color: #f5f7f5;
+            --card-bg: #ffffff;
+            --primary-green: #1fa159;
+            --primary-green-glow: rgba(31, 161, 89, 0.15);
+            --text-main: #10160f;
+            --text-muted: #667169;
+            --border-color: #e1e7e2;
+            --border-hover: #cdd8d0;
+            --input-bg: #f0f3f1;
+            --icon-bg: #e6f3ec;
+            --map-bg: #d7dad7;
+            --error-red: #d63c2c;
+        }
+
+        html.light-theme .status-badge.status-regular { color: #a3790a; }
 
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
             font-family: 'Outfit', sans-serif;
+            transition: background-color 0.25s ease, border-color 0.25s ease, color 0.25s ease;
         }
 
         body {
@@ -32,7 +62,6 @@
             overflow-x: hidden;
         }
 
-        /* ================= NAVEGACIÓN ================= */
         header {
             display: flex;
             justify-content: space-between;
@@ -50,7 +79,17 @@
             letter-spacing: 2px;
         }
 
-        .logo i { color: var(--primary-green); }
+        .logo-img {
+            width: 100px;
+        }
+        
+        .logo-light { display: none; }
+        
+        .logo-dark { display: inline-block; }
+
+        html.light-theme .logo-dark { display: none; }
+
+        html.light-theme .logo-light { display: inline-block; }
 
         .nav-controls {
             display: flex;
@@ -67,7 +106,6 @@
             font-size: 0.8rem;
         }
 
-        /* ================= SECCIÓN HERO ================= */
         .hero {
             padding: 60px 5%;
             max-width: 800px;
@@ -137,7 +175,6 @@
             background-color: var(--primary-green-glow);
         }
 
-        /* ================= DASHBOARD PRINCIPAL ================= */
         .dashboard {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -155,11 +192,10 @@
         }
 
         .card:hover {
-            border-color: #26382d;
+            border-color: var(--border-hover);
             transform: translateY(-5px);
         }
 
-        /* BIOMÉTRICO (Círculo) */
         .biometric-container {
             display: flex;
             flex-direction: column;
@@ -212,7 +248,6 @@
         .m-weight { bottom: 20%; right: 5%; }
         .m-bpm { bottom: 10%; left: 10%; }
 
-        /* PERFIL DETALLADO (Lo que solicitaste) */
         .profile-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -221,7 +256,7 @@
         }
 
         .profile-item {
-            background: #0d1410;
+            background: var(--input-bg);
             padding: 15px;
             border-radius: 10px;
             border: 1px solid var(--border-color);
@@ -238,7 +273,6 @@
             font-size: 1.1rem;
         }
 
-        /* ================= CARACTERÍSTICAS ================= */
         .features-section {
             padding: 0 5%;
             margin-bottom: 60px;
@@ -266,20 +300,19 @@
         .feature-card i {
             font-size: 1.5rem;
             color: var(--primary-green);
-            background: #112017;
+            background: var(--icon-bg);
             padding: 15px;
             border-radius: 10px;
             margin-bottom: 15px;
         }
 
-        /* ================= MAPA ================= */
         .map-section {
             padding: 0 5%;
             margin-bottom: 80px;
         }
         
         .map-container {
-            background: #b0b4b1;
+            background: var(--map-bg);
             height: 400px;
             border-radius: 16px;
             position: relative;
@@ -332,6 +365,430 @@
             color: var(--primary-green);
         }
 
+        .nav-login-btn {
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            font-size: 0.85rem;
+        }
+
+        .theme-toggle {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+
+        .theme-toggle:hover {
+            border-color: var(--primary-green);
+            color: var(--primary-green);
+        }
+
+        .management-section {
+            padding: 0 5%;
+            margin-bottom: 80px;
+        }
+
+        .management-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .management-header h3 {
+            font-size: 2rem;
+        }
+
+        .management-header p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            margin-top: 5px;
+        }
+
+        .btn-add {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            white-space: nowrap;
+        }
+
+        .table-controls {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 18px;
+            flex-wrap: wrap;
+        }
+
+        .search-wrapper {
+            position: relative;
+            flex: 1;
+            min-width: 220px;
+        }
+
+        .search-wrapper i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        .search-wrapper input {
+            width: 100%;
+            padding: 11px 15px 11px 42px;
+            background: var(--input-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--text-main);
+            font-size: 0.9rem;
+            outline: none;
+        }
+
+        .search-wrapper input:focus {
+            border-color: var(--primary-green);
+            box-shadow: 0 0 0 3px var(--primary-green-glow);
+        }
+
+        #filterEstado {
+            padding: 11px 15px;
+            background: var(--input-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--text-main);
+            font-size: 0.9rem;
+            outline: none;
+            cursor: pointer;
+            min-width: 180px;
+        }
+
+        #filterEstado:focus {
+            border-color: var(--primary-green);
+        }
+
+        /* Botón "Ver más" */
+        .table-footer {
+            display: flex;
+            justify-content: center;
+            padding: 20px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .table-footer .btn-outline {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .table-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            overflow: hidden;
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+        }
+
+        table.cattle-table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 720px;
+        }
+
+        .cattle-table th {
+            text-align: left;
+            padding: 16px 20px;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .cattle-table td {
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 0.95rem;
+        }
+
+        .cattle-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .cattle-table tbody tr:hover {
+            background: rgba(46, 204, 113, 0.04);
+        }
+
+        .id-badge {
+            color: var(--primary-green);
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .status-optimo {
+            background: rgba(46, 204, 113, 0.15);
+            color: var(--primary-green);
+        }
+
+        .status-regular {
+            background: rgba(241, 196, 15, 0.15);
+            color: #f1c40f;
+        }
+
+        .status-critico {
+            background: rgba(231, 76, 60, 0.15);
+            color: var(--error-red, #e74c3c);
+        }
+
+        .action-icons {
+            display: flex;
+            gap: 12px;
+        }
+
+        .icon-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            color: var(--text-muted);
+            transition: color 0.2s ease;
+            padding: 4px;
+        }
+
+        .icon-btn.edit:hover { color: var(--primary-green); }
+        .icon-btn.delete:hover { color: #e74c3c; }
+
+        .empty-state {
+            text-align: center;
+            padding: 50px 20px;
+            color: var(--text-muted);
+        }
+
+        .empty-state i {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            color: var(--border-color);
+        }
+
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.65);
+            backdrop-filter: blur(4px);
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            padding: 20px;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-box {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 35px;
+            width: 100%;
+            max-width: 560px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-box.small {
+            max-width: 420px;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .modal-header h3 {
+            font-size: 1.4rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .modal-header h3 i { color: var(--primary-green); }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 1.2rem;
+            cursor: pointer;
+        }
+
+        .modal-close:hover { color: var(--text-main); }
+
+        .modal-form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 18px;
+        }
+
+        .modal-form-grid .full-width {
+            grid-column: 1 / -1;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 11px 14px;
+            background: var(--input-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--text-main);
+            font-size: 0.9rem;
+            outline: none;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            border-color: var(--primary-green);
+            box-shadow: 0 0 0 3px var(--primary-green-glow);
+        }
+
+        .form-group input.input-error {
+            border-color: #e74c3c;
+        }
+
+        .form-group .error-message {
+            color: #e74c3c;
+            font-size: 0.75rem;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .form-group .error-message.show { display: block; }
+
+        .modal-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            margin-top: 30px;
+        }
+
+        .btn-cancel {
+            background: transparent;
+            color: var(--text-muted);
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-cancel:hover {
+            background: var(--border-color);
+            color: var(--text-main);
+        }
+
+        .btn-danger {
+            background-color: #e74c3c;
+            color: #fff;
+        }
+
+        .btn-danger:hover {
+            box-shadow: 0 0 15px rgba(231, 76, 60, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .delete-warning-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: rgba(231, 76, 60, 0.12);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+        }
+
+        .delete-warning-icon i {
+            color: #e74c3c;
+            font-size: 1.6rem;
+        }
+
+        .modal-box.small p.confirm-text {
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        .modal-box.small p.confirm-text strong {
+            color: var(--text-main);
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: var(--card-bg);
+            border: 1px solid var(--primary-green);
+            color: var(--text-main);
+            padding: 14px 22px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.9rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.3s ease;
+            z-index: 1100;
+        }
+
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .toast i { color: var(--primary-green); }
+
+        @media (max-width: 600px) {
+            .modal-form-grid { grid-template-columns: 1fr; }
+            .modal-form-grid .full-width { grid-column: auto; }
+        }
+
         /* Responsividad Básica */
         @media (max-width: 768px) {
             .dashboard { grid-template-columns: 1fr; }
@@ -343,10 +800,15 @@
 
     <header>
         <div class="logo">
-            <i class="fa-solid fa-microchip"></i> OXEN
+            <img src="logo.png" alt="OXEN" class="logo-img logo-dark">
+            <img src="logo-light.png" alt="OXEN" class="logo-img logo-light">
         </div>
         <div class="nav-controls">
             <span class="lang-switch">ES</span> PT
+            <button class="theme-toggle" id="themeToggle" title="Cambiar tema" aria-label="Cambiar tema claro u oscuro">
+                <i class="fa-solid fa-moon" id="themeIcon"></i>
+            </button>
+            <a href="login.html" class="btn btn-outline nav-login-btn"><i class="fa-solid fa-right-to-bracket"></i> Iniciar Sesión</a>
             <i class="fa-solid fa-bars" style="font-size: 1.5rem; cursor: pointer;"></i>
         </div>
     </header>
@@ -357,7 +819,6 @@
         <h2>Monitoreo Inteligente de Ganado</h2>
         <p>Tecnología de vanguardia en aretes electrónicos para el seguimiento biométrico, rastreo satelital y gestión integral de tu hato ganadero.</p>
         <div class="btn-group">
-            <button class="btn btn-primary">Ver Biométricos</button>
             <button class="btn btn-outline">Ver Mapa</button>
         </div>
     </section>
@@ -370,7 +831,6 @@
                 <p style="color: var(--text-muted); font-size: 0.8rem;">ACTIVO</p>
                 <div class="status-dot"></div>
             </div>
-            <div class="metric-float m-temp">38.5°C</div>
             <div class="metric-float m-weight">485 kg</div>
             <div class="metric-float m-bpm"><i class="fa-solid fa-heart-pulse"></i> 72 bpm</div>
         </div>
@@ -382,6 +842,10 @@
             </p>
             
             <div class="profile-grid">
+                <div class="profile-item">
+                    <p>No. de Arete</p>
+                    <h4>XXXXXXXXXXXX</h4>
+                </div>
                 <div class="profile-item">
                     <p>Edad</p>
                     <h4>3 Años, 2 Meses</h4>
@@ -410,30 +874,163 @@
         </div>
     </section>
 
+    <section class="management-section">
+        <div class="management-header">
+            <div>
+                <h3>Gestión de Ganado</h3>
+                <p>Registra, modifica o elimina manualmente los animales de tu hato.</p>
+            </div>
+            <button class="btn btn-primary btn-add" id="btnAbrirRegistrar">
+                <i class="fa-solid fa-plus"></i> Registrar Ganado
+            </button>
+        </div>
+
+        <div class="table-controls">
+            <div class="search-wrapper">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" id="searchInput" placeholder="Buscar por ID o raza...">
+            </div>
+            <select id="filterEstado">
+                <option value="todos">Todos los estados</option>
+                <option value="Óptimo">Óptimo</option>
+                <option value="Regular">Regular</option>
+                <option value="Crítico">Crítico</option>
+            </select>
+        </div>
+
+        <div class="table-card">
+            <div class="table-wrapper">
+                <table class="cattle-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>No. de arete</th>
+                            <th>Raza</th>
+                            <th>Edad</th>
+                            <th>Peso</th>
+                            <th>Estado de Salud</th>
+                            <th>Última Vacunación</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="cattleTableBody">
+
+                    </tbody>
+                </table>
+            </div>
+            <div class="empty-state" id="emptyState" style="display:none;">
+                <i class="fa-solid fa-cow"></i>
+                <p id="emptyStateText">Aún no hay ganado registrado. Usa "Registrar Ganado" para agregar el primero.</p>
+            </div>
+            <div class="table-footer" id="tableFooter" style="display:none;">
+                <button class="btn btn-outline" id="btnVerMas">Ver más <i class="fa-solid fa-chevron-down"></i></button>
+            </div>
+        </div>
+    </section>
+
+    <div class="modal-overlay" id="modalForm">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-tag" id="modalFormIcon"></i> <span id="modalFormTitle">Registrar Ganado</span></h3>
+                <button class="modal-close" data-close="modalForm"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+
+            <form id="cattleForm" novalidate>
+                <input type="hidden" id="cattleEditId">
+                <div class="modal-form-grid">
+                    <div class="form-group full-width">
+                        <label for="cattleId">ID del arete (chip)</label>
+                        <input type="text" id="cattleId" placeholder="Ej. OX-4821">
+                        <span class="error-message" id="err-cattleId">El ID es obligatorio y debe ser único.</span>
+                    </div>
+
+                     <div class="form-group full-width">
+                        <label for="cattleArete">No del arete</label>
+                        <input type="text" id="cattleArete" placeholder="Ej. XXXXXXXXXXXX">
+                        <span class="error-message" id="err-cattleId">Ingrese el No. de arete del animal</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="cattleRaza">Raza</label>
+                        <input type="text" id="cattleRaza" placeholder="Ej. Angus Negro">
+                        <span class="error-message" id="err-cattleRaza">Ingresa la raza.</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="cattleEdad">Edad</label>
+                        <input type="text" id="cattleEdad" placeholder="Ej. 3 Años, 2 Meses">
+                        <span class="error-message" id="err-cattleEdad">Ingresa la edad.</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="cattlePeso">Peso (kg)</label>
+                        <input type="number" id="cattlePeso" placeholder="Ej. 485" min="0">
+                        <span class="error-message" id="err-cattlePeso">Ingresa un peso válido.</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="cattleTemp">Temperatura (°C)</label>
+                        <input type="number" step="0.1" id="cattleTemp" placeholder="Ej. 38.5">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="cattleBpm">Ritmo cardíaco (bpm)</label>
+                        <input type="number" id="cattleBpm" placeholder="Ej. 72">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="cattleEstado">Estado de salud</label>
+                        <select id="cattleEstado">
+                            <option value="Óptimo">Óptimo</option>
+                            <option value="Regular">Regular</option>
+                            <option value="Crítico">Crítico</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label for="cattleVacuna">Última vacunación</label>
+                        <input type="text" id="cattleVacuna" placeholder="Ej. Fiebre Aftosa (Hace 2m)">
+                    </div>
+                </div>
+
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-cancel" data-close="modalForm">Cancelar</button>
+                    <button type="submit" class="btn btn-primary" id="btnGuardarCattle">Guardar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="modalDelete">
+        <div class="modal-box small">
+            <div class="delete-warning-icon">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+            </div>
+            <div class="modal-header" style="justify-content:center; text-align:center; flex-direction:column; gap:8px;">
+                <h3>¿Eliminar este animal?</h3>
+            </div>
+            <p class="confirm-text">Estás a punto de eliminar el registro de <strong id="deleteTargetId">OX-0000</strong>. Esta acción no se puede deshacer.</p>
+            <div class="modal-actions" style="justify-content:center;">
+                <button type="button" class="btn btn-cancel" data-close="modalDelete">Cancelar</button>
+                <button type="button" class="btn btn-danger" id="btnConfirmDelete">Sí, eliminar</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast" id="toast">
+        <i class="fa-solid fa-circle-check"></i>
+        <span id="toastMessage">Operación realizada con éxito</span>
+    </div>
+
     <section class="features-section">
         <h3>¿Por qué <span style="color: var(--primary-green)">OXEN</span>?</h3>
         <p style="text-align: center; color: var(--text-muted); margin-bottom: 40px; margin-top: -30px;">Un sistema completo que combina hardware de precisión con software inteligente.</p>
         
         <div class="features-grid">
             <div class="feature-card">
-                <i class="fa-solid fa-temperature-half"></i>
-                <h4 style="margin-bottom: 10px;">Monitoreo de Temperatura</h4>
-                <p style="color: var(--text-muted); font-size: 0.9rem;">Detección temprana de fiebre y anomalías térmicas en tiempo real.</p>
-            </div>
-            <div class="feature-card">
                 <i class="fa-solid fa-location-dot"></i>
-                <h4 style="margin-bottom: 10px;">GPS Satelital</h4>
+                <h4 style="margin-bottom: 10px;">GPS</h4>
                 <p style="color: var(--text-muted); font-size: 0.9rem;">Rastreo en tiempo real de cada cabeza de ganado con geocercas.</p>
-            </div>
-            <div class="feature-card">
-                <i class="fa-solid fa-heart-pulse"></i>
-                <h4 style="margin-bottom: 10px;">Ritmo Cardíaco</h4>
-                <p style="color: var(--text-muted); font-size: 0.9rem;">Sensores para evaluar el estrés, salud y bienestar animal integral.</p>
-            </div>
-            <div class="feature-card">
-                <i class="fa-solid fa-scale-balanced"></i>
-                <h4 style="margin-bottom: 10px;">Control de Peso</h4>
-                <p style="color: var(--text-muted); font-size: 0.9rem;">Estimación con IA y seguimiento de curvas de crecimiento.</p>
             </div>
         </div>
     </section>
@@ -465,6 +1062,299 @@
             </div>
         </div>
     </section>
+
+    <script>
+        let cattleData = [
+            { id: 'OX-4821', raza: 'Angus Negro', edad: '3 Años, 2 Meses', peso: 485, temp: 38.5, bpm: 72, estado: 'Óptimo', vacuna: 'Fiebre Aftosa (Hace 2m)' },
+            { id: 'OX-3157', raza: 'Hereford', edad: '2 Años, 6 Meses', peso: 410, temp: 38.7, bpm: 68, estado: 'Óptimo', vacuna: 'Brucelosis (Hace 1m)' },
+            { id: 'OX-7893', raza: 'Brahman', edad: '4 Años', peso: 520, temp: 39.4, bpm: 88, estado: 'Regular', vacuna: 'Fiebre Aftosa (Hace 3m)' },
+            { id: 'OX-2456', raza: 'Charolais', edad: '1 Año, 8 Meses', peso: 320, temp: 38.4, bpm: 70, estado: 'Óptimo', vacuna: 'Rabia (Hace 2m)' }
+        ];
+
+        const tableBody = document.getElementById('cattleTableBody');
+        const emptyState = document.getElementById('emptyState');
+        const emptyStateText = document.getElementById('emptyStateText');
+        const tableFooter = document.getElementById('tableFooter');
+        const searchInput = document.getElementById('searchInput');
+        const filterEstadoSelect = document.getElementById('filterEstado');
+        const btnVerMas = document.getElementById('btnVerMas');
+
+        const PAGE_SIZE = 5;
+        let visibleCount = PAGE_SIZE;
+        let searchTerm = '';
+        let filterEstado = 'todos';
+
+        function estadoBadgeClass(estado) {
+            if (estado === 'Óptimo') return 'status-optimo';
+            if (estado === 'Regular') return 'status-regular';
+            return 'status-critico';
+        }
+
+        function getFilteredData() {
+            return cattleData.filter(animal => {
+                const texto = (animal.id + ' ' + animal.raza).toLowerCase();
+                const coincideBusqueda = texto.includes(searchTerm);
+                const coincideEstado = filterEstado === 'todos' || animal.estado === filterEstado;
+                return coincideBusqueda && coincideEstado;
+            });
+        }
+
+        function renderTable() {
+            const filtered = getFilteredData();
+            tableBody.innerHTML = '';
+
+            if (filtered.length === 0) {
+                emptyState.style.display = 'block';
+                emptyStateText.textContent = cattleData.length === 0
+                    ? 'Aún no hay ganado registrado. Usa "Registrar Ganado" para agregar el primero.'
+                    : 'No se encontraron animales que coincidan con tu búsqueda.';
+                document.querySelector('.table-wrapper').style.display = 'none';
+                tableFooter.style.display = 'none';
+                return;
+            }
+
+            emptyState.style.display = 'none';
+            document.querySelector('.table-wrapper').style.display = 'block';
+
+            const visibles = filtered.slice(0, visibleCount);
+
+            visibles.forEach(animal => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td class="id-badge">${animal.id}</td>
+                    <td>${animal.arete || '—'}</td>
+                    <td>${animal.raza}</td>
+                    <td>${animal.edad}</td>
+                    <td>${animal.peso} kg</td>
+                    <td><span class="status-badge ${estadoBadgeClass(animal.estado)}">${animal.estado}</span></td>
+                    <td>${animal.vacuna || '—'}</td>
+                    <td>
+                        <div class="action-icons">
+                            <button class="icon-btn edit" title="Modificar" data-id="${animal.id}"><i class="fa-solid fa-pen"></i></button>
+                            <button class="icon-btn delete" title="Eliminar" data-id="${animal.id}"><i class="fa-solid fa-trash"></i></button>
+                        </div>
+                    </td>
+                `;
+                tableBody.appendChild(tr);
+            });
+
+            tableFooter.style.display = filtered.length > visibleCount ? 'flex' : 'none';
+        }
+
+        searchInput.addEventListener('input', (e) => {
+            searchTerm = e.target.value.trim().toLowerCase();
+            visibleCount = PAGE_SIZE;
+            renderTable();
+        });
+
+        filterEstadoSelect.addEventListener('change', (e) => {
+            filterEstado = e.target.value;
+            visibleCount = PAGE_SIZE;
+            renderTable();
+        });
+
+        btnVerMas.addEventListener('click', () => {
+            visibleCount += PAGE_SIZE;
+            renderTable();
+        });
+
+        function openModal(id) {
+            document.getElementById(id).classList.add('active');
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).classList.remove('active');
+        }
+
+        document.querySelectorAll('[data-close]').forEach(btn => {
+            btn.addEventListener('click', () => closeModal(btn.dataset.close));
+        });
+
+        document.querySelectorAll('.modal-overlay').forEach(overlay => {
+            overlay.addEventListener('click', (e) => {
+                if (e.target === overlay) closeModal(overlay.id);
+            });
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                document.querySelectorAll('.modal-overlay.active').forEach(overlay => closeModal(overlay.id));
+            }
+        });
+
+        let toastTimeout;
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toastMessage').textContent = message;
+            toast.classList.add('show');
+            clearTimeout(toastTimeout);
+            toastTimeout = setTimeout(() => toast.classList.remove('show'), 3000);
+        }
+
+        const cattleForm = document.getElementById('cattleForm');
+        const cattleIdInput = document.getElementById('cattleId');
+        const cattleAreteInput = document.getElementById('cattleArete');
+        const cattleRazaInput = document.getElementById('cattleRaza');
+        const cattleEdadInput = document.getElementById('cattleEdad');
+        const cattlePesoInput = document.getElementById('cattlePeso');
+        const cattleEditIdInput = document.getElementById('cattleEditId');
+
+        function clearFormErrors() {
+            ['cattleId', 'cattleArete', 'cattleRaza', 'cattleEdad', 'cattlePeso'].forEach(fieldId => {
+                document.getElementById(fieldId).classList.remove('input-error');
+                const err = document.getElementById('err-' + fieldId);
+                if (err) err.classList.remove('show');
+            });
+        }
+
+        function resetCattleForm() {
+            cattleForm.reset();
+            cattleEditIdInput.value = '';
+            clearFormErrors();
+        }
+
+        document.getElementById('btnAbrirRegistrar').addEventListener('click', () => {
+            resetCattleForm();
+            document.getElementById('modalFormTitle').textContent = 'Registrar Ganado';
+            openModal('modalForm');
+        });
+
+        tableBody.addEventListener('click', (e) => {
+            const editBtn = e.target.closest('.icon-btn.edit');
+            const deleteBtn = e.target.closest('.icon-btn.delete');
+
+            if (editBtn) {
+                const id = editBtn.dataset.id;
+                const animal = cattleData.find(a => a.id === id);
+                if (!animal) return;
+
+                resetCattleForm();
+                document.getElementById('modalFormTitle').textContent = 'Modificar Ganado';
+                cattleEditIdInput.value = animal.id;
+                cattleIdInput.value = animal.id;
+                cattleRazaInput.value = animal.raza;
+                cattleEdadInput.value = animal.edad;
+                cattlePesoInput.value = animal.peso;
+                document.getElementById('cattleEstado').value = animal.estado;
+                document.getElementById('cattleVacuna').value = animal.vacuna || '';
+
+                openModal('modalForm');
+            }
+
+            if (deleteBtn) {
+                const id = deleteBtn.dataset.id;
+                document.getElementById('deleteTargetId').textContent = id;
+                document.getElementById('btnConfirmDelete').dataset.id = id;
+                openModal('modalDelete');
+            }
+        });
+
+        cattleForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            clearFormErrors();
+
+            const id = cattleIdInput.value.trim().toUpperCase();
+            const arete = cattleAreteInput.value.trim();
+            const raza = cattleRazaInput.value.trim();
+            const edad = cattleEdadInput.value.trim();
+            const peso = cattlePesoInput.value.trim();
+            const editingId = cattleEditIdInput.value;
+
+            let hasError = false;
+
+            if (!id) {
+                document.getElementById('cattleId').classList.add('input-error');
+                document.getElementById('err-cattleId').textContent = 'El ID es obligatorio.';
+                document.getElementById('err-cattleId').classList.add('show');
+                hasError = true;
+            } else {
+                const duplicado = cattleData.some(a => a.id === id && a.id !== editingId);
+                if (duplicado) {
+                    document.getElementById('cattleId').classList.add('input-error');
+                    document.getElementById('err-cattleId').textContent = 'Ya existe un animal con ese ID.';
+                    document.getElementById('err-cattleId').classList.add('show');
+                    hasError = true;
+                }
+            }
+
+            if(!arete) {
+                document.getElementById('cattleArete').classList.add('input-error');
+                document.getElementById('err-cattleArete').textContent = 'El No. de arete es obligatorio.';
+                document.getElementById('err-cattleArete').classList.add('show');
+                hasError = true;
+            }
+
+            if (!raza) {
+                document.getElementById('cattleRaza').classList.add('input-error');
+                document.getElementById('err-cattleRaza').classList.add('show');
+                hasError = true;
+            }
+
+            if (!edad) {
+                document.getElementById('cattleEdad').classList.add('input-error');
+                document.getElementById('err-cattleEdad').classList.add('show');
+                hasError = true;
+            }
+
+            if (!peso || isNaN(peso) || Number(peso) <= 0) {
+                document.getElementById('cattlePeso').classList.add('input-error');
+                document.getElementById('err-cattlePeso').classList.add('show');
+                hasError = true;
+            }
+
+            if (hasError) return;
+
+            const nuevoAnimal = {
+                id,
+                arete,
+                raza,
+                edad,
+                peso: Number(peso),
+                estado: document.getElementById('cattleEstado').value,
+                vacuna: document.getElementById('cattleVacuna').value.trim()
+            };
+
+            if (editingId) {
+                const index = cattleData.findIndex(a => a.id === editingId);
+                cattleData[index] = nuevoAnimal;
+                showToast(`${id} actualizado correctamente.`);
+            } else {
+                cattleData.push(nuevoAnimal);
+                showToast(`${id} registrado correctamente.`);
+            }
+
+            renderTable();
+            closeModal('modalForm');
+        });
+
+        document.getElementById('btnConfirmDelete').addEventListener('click', function () {
+            const id = this.dataset.id;
+            cattleData = cattleData.filter(a => a.id !== id);
+            renderTable();
+            closeModal('modalDelete');
+            showToast(`${id} eliminado correctamente.`);
+        });
+
+        const themeToggleBtn = document.getElementById('themeToggle');
+        const themeIcon = document.getElementById('themeIcon');
+
+        function updateThemeIcon() {
+            const isLight = document.documentElement.classList.contains('light-theme');
+            themeIcon.className = isLight ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
+            themeToggleBtn.title = isLight ? 'Cambiar a tema oscuro' : 'Cambiar a tema claro';
+        }
+
+        updateThemeIcon();
+
+        themeToggleBtn.addEventListener('click', () => {
+            document.documentElement.classList.toggle('light-theme');
+            const isLight = document.documentElement.classList.contains('light-theme');
+            localStorage.setItem('oxen-theme', isLight ? 'light' : 'dark');
+            updateThemeIcon();
+        });
+
+        renderTable();
+    </script>
 
 </body>
 </html>
