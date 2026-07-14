@@ -4,8 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>OXEN - Monitoreo Inteligente de Ganado</title>
+    <!-- Importar fuente de Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <!-- Iconos de FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <script>
         (function () {
             if (localStorage.getItem('oxen-theme') === 'light') {
@@ -15,38 +18,16 @@
     </script>
     
     <style>
+        /* ================= VARIABLES Y RESET ================= */
         :root {
             --bg-color: #0b110d;
             --card-bg: #111a14;
             --primary-green: #2ecc71;
             --primary-green-glow: rgba(46, 204, 113, 0.2);
             --text-main: #ffffff;
-            --text-muted: #8e9e93;
+            --text-muted: #a3b5a9; /* Un poco más claro para mejor lectura */
             --border-color: #1f2d24;
-            --border-hover: #26382d;
-            --input-bg: #0d1410;
-            --icon-bg: #112017;
-            --map-bg: #b0b4b1;
-            --error-red: #e74c3c;
-            --toggle-icon: "\f186";
         }
-
-        html.light-theme {
-            --bg-color: #f5f7f5;
-            --card-bg: #ffffff;
-            --primary-green: #1fa159;
-            --primary-green-glow: rgba(31, 161, 89, 0.15);
-            --text-main: #10160f;
-            --text-muted: #667169;
-            --border-color: #e1e7e2;
-            --border-hover: #cdd8d0;
-            --input-bg: #f0f3f1;
-            --icon-bg: #e6f3ec;
-            --map-bg: #d7dad7;
-            --error-red: #d63c2c;
-        }
-
-        html.light-theme .status-badge.status-regular { color: #a3790a; }
 
         * {
             margin: 0;
@@ -60,6 +41,7 @@
             background-color: var(--bg-color);
             color: var(--text-main);
             overflow-x: hidden;
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
 
         header {
@@ -68,13 +50,14 @@
             align-items: center;
             padding: 20px 5%;
             border-bottom: 1px solid var(--border-color);
+            transition: border-color 0.3s ease;
         }
 
         .logo {
             display: flex;
             align-items: center;
             gap: 10px;
-            font-size: 1.5rem;
+            font-size: 1.6rem;
             font-weight: 800;
             letter-spacing: 2px;
         }
@@ -97,13 +80,30 @@
             gap: 20px;
         }
 
+        .theme-btn {
+            background: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            padding: 8px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1.1rem;
+        }
+        
+        .theme-btn:hover {
+            background: var(--primary-green-glow);
+            color: var(--primary-green);
+        }
+
         .lang-switch {
             background: var(--primary-green);
-            color: #000;
+            color: #fff;
+            text-shadow: 0 0 2px rgba(0,0,0,0.5);
             padding: 4px 8px;
             border-radius: 4px;
             font-weight: 600;
-            font-size: 0.8rem;
+            font-size: 0.85rem;
         }
 
         .hero {
@@ -115,21 +115,22 @@
             display: inline-block;
             border: 1px solid var(--primary-green);
             color: var(--primary-green);
-            padding: 5px 15px;
+            padding: 6px 16px;
             border-radius: 20px;
-            font-size: 0.8rem;
+            font-size: 0.85rem;
             margin-bottom: 20px;
             background: var(--primary-green-glow);
+            font-weight: 600;
         }
 
         .hero h1 {
-            font-size: 4rem;
+            font-size: 4.2rem;
             font-weight: 800;
             margin-bottom: 10px;
         }
 
         .hero h2 {
-            font-size: 1.5rem;
+            font-size: 1.6rem;
             font-weight: 400;
             color: var(--text-muted);
             margin-bottom: 20px;
@@ -139,6 +140,7 @@
             color: var(--text-muted);
             line-height: 1.6;
             margin-bottom: 30px;
+            font-size: 1.1rem;
         }
 
         .btn-group {
@@ -147,17 +149,19 @@
         }
 
         .btn {
-            padding: 12px 24px;
+            padding: 14px 28px;
             border-radius: 8px;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
             border: none;
+            font-size: 1rem;
         }
 
         .btn-primary {
             background-color: var(--primary-green);
-            color: #000;
+            color: #fff;
+            text-shadow: 0 0 2px rgba(0,0,0,0.3);
         }
 
         .btn-primary:hover {
@@ -175,12 +179,13 @@
             background-color: var(--primary-green-glow);
         }
 
+        /* ================= DASHBOARD PRINCIPAL ================= */
         .dashboard {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 30px;
-            padding: 40px 5%;
-            margin-bottom: 60px;
+            padding: 0 5%;
+            margin-bottom: 80px;
         }
 
         .card {
@@ -192,7 +197,7 @@
         }
 
         .card:hover {
-            border-color: var(--border-hover);
+            border-color: #26382d;
             transform: translateY(-5px);
         }
 
@@ -202,16 +207,16 @@
             align-items: center;
             justify-content: center;
             position: relative;
-            height: 350px;
+            height: 400px;
         }
 
         .circle-glow {
             position: absolute;
-            width: 250px;
-            height: 250px;
+            width: 280px;
+            height: 280px;
             border-radius: 50%;
-            border: 2px solid #1a291f;
-            box-shadow: inset 0 0 50px rgba(46, 204, 113, 0.05), 0 0 50px rgba(46, 204, 113, 0.1);
+            border: 2px solid var(--border-color);
+            box-shadow: inset 0 0 50px var(--primary-green-glow), 0 0 50px var(--primary-green-glow);
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -219,12 +224,12 @@
         }
 
         .status-dot {
-            width: 10px;
-            height: 10px;
+            width: 12px;
+            height: 12px;
             background: var(--primary-green);
             border-radius: 50%;
             margin: 10px auto;
-            box-shadow: 0 0 10px var(--primary-green);
+            box-shadow: 0 0 12px var(--primary-green);
             animation: pulse 2s infinite;
         }
 
@@ -238,33 +243,37 @@
             position: absolute;
             background: var(--card-bg);
             border: 1px solid var(--border-color);
-            padding: 8px 15px;
+            padding: 10px 18px;
             border-radius: 8px;
-            font-size: 0.9rem;
+            font-size: 1rem;
             color: var(--primary-green);
+            font-weight: 600;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
         }
 
-        .m-temp { top: 10%; right: 10%; }
-        .m-weight { bottom: 20%; right: 5%; }
-        .m-bpm { bottom: 10%; left: 10%; }
+        .m-temp { top: 10%; right: 5%; }
+        .m-weight { bottom: 20%; right: 2%; }
+        .m-bpm { bottom: 10%; left: 5%; }
 
+        /* PERFIL DETALLADO (Lo que solicitaste) */
         .profile-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 20px;
-            margin-top: 20px;
+            margin-top: 25px;
         }
 
         .profile-item {
-            background: var(--input-bg);
+            background: #0d1410;
             padding: 15px;
             border-radius: 10px;
             border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
         }
 
         .profile-item p {
             color: var(--text-muted);
-            font-size: 0.8rem;
+            font-size: 0.9rem;
             margin-bottom: 5px;
         }
 
@@ -273,6 +282,7 @@
             font-size: 1.1rem;
         }
 
+        /* ================= CARACTERÍSTICAS ================= */
         .features-section {
             padding: 0 5%;
             margin-bottom: 60px;
@@ -300,19 +310,20 @@
         .feature-card i {
             font-size: 1.5rem;
             color: var(--primary-green);
-            background: var(--icon-bg);
+            background: #112017;
             padding: 15px;
             border-radius: 10px;
             margin-bottom: 15px;
         }
 
+        /* ================= MAPA ================= */
         .map-section {
             padding: 0 5%;
             margin-bottom: 80px;
         }
         
         .map-container {
-            background: var(--map-bg);
+            background: #b0b4b1;
             height: 400px;
             border-radius: 16px;
             position: relative;
@@ -790,29 +801,33 @@
         }
 
         /* Responsividad Básica */
-        @media (max-width: 768px) {
+        @media (max-width: 900px) {
             .dashboard { grid-template-columns: 1fr; }
-            .hero h1 { font-size: 3rem; }
+            .hero h1 { font-size: 3.2rem; }
         }
     </style>
 </head>
 <body>
 
+    <!-- Navegación -->
     <header>
+        <!-- AQUÍ PUEDES PONER TU IMAGEN COMO LOGO -->
         <div class="logo">
             <img src="logo.png" alt="OXEN" class="logo-img logo-dark">
             <img src="logo-light.png" alt="OXEN" class="logo-img logo-light">
         </div>
+        
         <div class="nav-controls">
-            <span class="lang-switch">ES</span> PT
-            <button class="theme-toggle" id="themeToggle" title="Cambiar tema" aria-label="Cambiar tema claro u oscuro">
-                <i class="fa-solid fa-moon" id="themeIcon"></i>
+            <!-- Botón para cambiar Tema Claro/Oscuro -->
+            <button class="theme-btn" id="theme-toggle" title="Cambiar Tema">
+                <i class="fa-solid fa-sun"></i>
             </button>
-            <a href="login.html" class="btn btn-outline nav-login-btn"><i class="fa-solid fa-right-to-bracket"></i> Iniciar Sesión</a>
+            <span class="lang-switch">ES</span> PT
             <i class="fa-solid fa-bars" style="font-size: 1.5rem; cursor: pointer;"></i>
         </div>
     </header>
 
+    <!-- Sección Principal (Hero) -->
     <section class="hero">
         <div class="tag"><i class="fa-solid fa-cow"></i> TECNOLOGÍA GANADERA</div>
         <h1>OXEN</h1>
@@ -823,21 +838,58 @@
         </div>
     </section>
 
+    <!-- Sección de Mapa (MOVIDA ARRIBA) -->
+    <section class="map-section">
+        <h3 style="font-size: 2.2rem; margin-bottom: 10px;">Rastreo Satelital</h3>
+        <p style="color: var(--text-muted); margin-bottom: 30px; font-size: 1.1rem;">Ubicación en tiempo real con geocercas y alertas de movimiento.</p>
+        
+        <div class="map-container">
+            <!-- Interfaz superpuesta al mapa -->
+            <div class="active-tags">
+                <p style="font-size: 0.95rem; margin-bottom: 10px; font-weight: 600;"><i class="fa-solid fa-circle" style="color: var(--primary-green); font-size: 0.7rem;"></i> 4 animales activos</p>
+                <div class="tag-list">
+                    <span>OX-4821</span>
+                    <span>OX-3157</span>
+                    <span>OX-7893</span>
+                    <span>OX-2456</span>
+                </div>
+            </div>
+            
+            <!-- Representación visual del mapa y geocerca -->
+            <div class="geofence"></div>
+            <div class="cow-marker c-1"></div>
+            <div class="cow-marker c-2"></div>
+            <div class="cow-marker c-3"></div>
+            <div class="cow-marker c-4"></div>
+            
+            <!-- Controles falsos del mapa -->
+            <div style="position: absolute; top: 20px; right: 20px; background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 8px; display: flex; flex-direction: column; overflow: hidden;">
+                <button style="padding: 10px 15px; border: none; border-bottom: 1px solid var(--border-color); cursor: pointer; font-weight: bold; background: transparent; color: var(--text-main); font-size: 1.2rem;">+</button>
+                <button style="padding: 10px 15px; border: none; cursor: pointer; font-weight: bold; background: transparent; color: var(--text-main); font-size: 1.2rem;">-</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sección de Características (EN MEDIO) -->
+   
+
+    <!-- Dashboard: Biométricos y Perfil (MOVIDO ABAJO) -->
     <section class="dashboard">
+        <!-- Tarjeta de Biometría en Tiempo Real -->
         <div class="card biometric-container">
             <div class="circle-glow">
-                <i class="fa-solid fa-tag" style="font-size: 2rem; color: #deb887; margin-bottom: 10px;"></i>
-                <h3 style="color: var(--primary-green); letter-spacing: 2px;">ID: OX-4821</h3>
-                <p style="color: var(--text-muted); font-size: 0.8rem;">ACTIVO</p>
+                <i class="fa-solid fa-tag" style="font-size: 2.5rem; color: #deb887; margin-bottom: 10px;"></i>
+                <h3 style="color: var(--primary-green); letter-spacing: 2px; font-size: 1.4rem;">ID: OX-4821</h3>
+                <p style="color: var(--text-muted); font-size: 0.9rem; font-weight: 600;">ACTIVO</p>
                 <div class="status-dot"></div>
             </div>
-            <div class="metric-float m-weight">485 kg</div>
-            <div class="metric-float m-bpm"><i class="fa-solid fa-heart-pulse"></i> 72 bpm</div>
+           
         </div>
 
+        <!-- Tarjeta de Perfil Detallado -->
         <div class="card">
-            <h3 style="margin-bottom: 15px;"><i class="fa-solid fa-clipboard-list"></i> Perfil Clínico y Productivo</h3>
-            <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 20px;">
+            <h3 style="margin-bottom: 15px; font-size: 1.6rem;"><i class="fa-solid fa-clipboard-list"></i> Perfil Clínico y Productivo</h3>
+            <p style="color: var(--text-muted); font-size: 1rem; margin-bottom: 25px;">
                 Información centralizada para la toma de decisiones rápidas y organización segura.
             </p>
             
@@ -968,16 +1020,8 @@
                         <span class="error-message" id="err-cattlePeso">Ingresa un peso válido.</span>
                     </div>
 
-                    <div class="form-group">
-                        <label for="cattleTemp">Temperatura (°C)</label>
-                        <input type="number" step="0.1" id="cattleTemp" placeholder="Ej. 38.5">
-                    </div>
 
-                    <div class="form-group">
-                        <label for="cattleBpm">Ritmo cardíaco (bpm)</label>
-                        <input type="number" id="cattleBpm" placeholder="Ej. 72">
-                    </div>
-
+                  
                     <div class="form-group">
                         <label for="cattleEstado">Estado de salud</label>
                         <select id="cattleEstado">
@@ -1022,339 +1066,6 @@
         <span id="toastMessage">Operación realizada con éxito</span>
     </div>
 
-    <section class="features-section">
-        <h3>¿Por qué <span style="color: var(--primary-green)">OXEN</span>?</h3>
-        <p style="text-align: center; color: var(--text-muted); margin-bottom: 40px; margin-top: -30px;">Un sistema completo que combina hardware de precisión con software inteligente.</p>
-        
-        <div class="features-grid">
-            <div class="feature-card">
-                <i class="fa-solid fa-location-dot"></i>
-                <h4 style="margin-bottom: 10px;">GPS</h4>
-                <p style="color: var(--text-muted); font-size: 0.9rem;">Rastreo en tiempo real de cada cabeza de ganado con geocercas.</p>
-            </div>
-        </div>
-    </section>
-
-    <section class="map-section">
-        <h3 style="text-align: center; font-size: 2rem; margin-bottom: 10px;">Rastreo Satelital</h3>
-        <p style="text-align: center; color: var(--text-muted); margin-bottom: 30px;">Ubicación en tiempo real con geocercas y alertas de movimiento.</p>
-        
-        <div class="map-container">
-            <div class="active-tags">
-                <p style="font-size: 0.9rem; margin-bottom: 10px;"><i class="fa-solid fa-circle" style="color: var(--primary-green); font-size: 0.6rem;"></i> 4 animales activos</p>
-                <div class="tag-list">
-                    <span>OX-4821</span>
-                    <span>OX-3157</span>
-                    <span>OX-7893</span>
-                    <span>OX-2456</span>
-                </div>
-            </div>
-            
-            <div class="geofence"></div>
-            <div class="cow-marker c-1"></div>
-            <div class="cow-marker c-2"></div>
-            <div class="cow-marker c-3"></div>
-            <div class="cow-marker c-4"></div>
-            
-            <div style="position: absolute; top: 20px; right: 20px; background: white; border-radius: 4px; display: flex; flex-direction: column; overflow: hidden;">
-                <button style="padding: 5px 10px; border: none; border-bottom: 1px solid #ccc; cursor: pointer; font-weight: bold;">+</button>
-                <button style="padding: 5px 10px; border: none; cursor: pointer; font-weight: bold;">-</button>
-            </div>
-        </div>
-    </section>
-
-    <script>
-        let cattleData = [
-            { id: 'OX-4821', raza: 'Angus Negro', edad: '3 Años, 2 Meses', peso: 485, temp: 38.5, bpm: 72, estado: 'Óptimo', vacuna: 'Fiebre Aftosa (Hace 2m)' },
-            { id: 'OX-3157', raza: 'Hereford', edad: '2 Años, 6 Meses', peso: 410, temp: 38.7, bpm: 68, estado: 'Óptimo', vacuna: 'Brucelosis (Hace 1m)' },
-            { id: 'OX-7893', raza: 'Brahman', edad: '4 Años', peso: 520, temp: 39.4, bpm: 88, estado: 'Regular', vacuna: 'Fiebre Aftosa (Hace 3m)' },
-            { id: 'OX-2456', raza: 'Charolais', edad: '1 Año, 8 Meses', peso: 320, temp: 38.4, bpm: 70, estado: 'Óptimo', vacuna: 'Rabia (Hace 2m)' }
-        ];
-
-        const tableBody = document.getElementById('cattleTableBody');
-        const emptyState = document.getElementById('emptyState');
-        const emptyStateText = document.getElementById('emptyStateText');
-        const tableFooter = document.getElementById('tableFooter');
-        const searchInput = document.getElementById('searchInput');
-        const filterEstadoSelect = document.getElementById('filterEstado');
-        const btnVerMas = document.getElementById('btnVerMas');
-
-        const PAGE_SIZE = 5;
-        let visibleCount = PAGE_SIZE;
-        let searchTerm = '';
-        let filterEstado = 'todos';
-
-        function estadoBadgeClass(estado) {
-            if (estado === 'Óptimo') return 'status-optimo';
-            if (estado === 'Regular') return 'status-regular';
-            return 'status-critico';
-        }
-
-        function getFilteredData() {
-            return cattleData.filter(animal => {
-                const texto = (animal.id + ' ' + animal.raza).toLowerCase();
-                const coincideBusqueda = texto.includes(searchTerm);
-                const coincideEstado = filterEstado === 'todos' || animal.estado === filterEstado;
-                return coincideBusqueda && coincideEstado;
-            });
-        }
-
-        function renderTable() {
-            const filtered = getFilteredData();
-            tableBody.innerHTML = '';
-
-            if (filtered.length === 0) {
-                emptyState.style.display = 'block';
-                emptyStateText.textContent = cattleData.length === 0
-                    ? 'Aún no hay ganado registrado. Usa "Registrar Ganado" para agregar el primero.'
-                    : 'No se encontraron animales que coincidan con tu búsqueda.';
-                document.querySelector('.table-wrapper').style.display = 'none';
-                tableFooter.style.display = 'none';
-                return;
-            }
-
-            emptyState.style.display = 'none';
-            document.querySelector('.table-wrapper').style.display = 'block';
-
-            const visibles = filtered.slice(0, visibleCount);
-
-            visibles.forEach(animal => {
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td class="id-badge">${animal.id}</td>
-                    <td>${animal.arete || '—'}</td>
-                    <td>${animal.raza}</td>
-                    <td>${animal.edad}</td>
-                    <td>${animal.peso} kg</td>
-                    <td><span class="status-badge ${estadoBadgeClass(animal.estado)}">${animal.estado}</span></td>
-                    <td>${animal.vacuna || '—'}</td>
-                    <td>
-                        <div class="action-icons">
-                            <button class="icon-btn edit" title="Modificar" data-id="${animal.id}"><i class="fa-solid fa-pen"></i></button>
-                            <button class="icon-btn delete" title="Eliminar" data-id="${animal.id}"><i class="fa-solid fa-trash"></i></button>
-                        </div>
-                    </td>
-                `;
-                tableBody.appendChild(tr);
-            });
-
-            tableFooter.style.display = filtered.length > visibleCount ? 'flex' : 'none';
-        }
-
-        searchInput.addEventListener('input', (e) => {
-            searchTerm = e.target.value.trim().toLowerCase();
-            visibleCount = PAGE_SIZE;
-            renderTable();
-        });
-
-        filterEstadoSelect.addEventListener('change', (e) => {
-            filterEstado = e.target.value;
-            visibleCount = PAGE_SIZE;
-            renderTable();
-        });
-
-        btnVerMas.addEventListener('click', () => {
-            visibleCount += PAGE_SIZE;
-            renderTable();
-        });
-
-        function openModal(id) {
-            document.getElementById(id).classList.add('active');
-        }
-
-        function closeModal(id) {
-            document.getElementById(id).classList.remove('active');
-        }
-
-        document.querySelectorAll('[data-close]').forEach(btn => {
-            btn.addEventListener('click', () => closeModal(btn.dataset.close));
-        });
-
-        document.querySelectorAll('.modal-overlay').forEach(overlay => {
-            overlay.addEventListener('click', (e) => {
-                if (e.target === overlay) closeModal(overlay.id);
-            });
-        });
-
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') {
-                document.querySelectorAll('.modal-overlay.active').forEach(overlay => closeModal(overlay.id));
-            }
-        });
-
-        let toastTimeout;
-        function showToast(message) {
-            const toast = document.getElementById('toast');
-            document.getElementById('toastMessage').textContent = message;
-            toast.classList.add('show');
-            clearTimeout(toastTimeout);
-            toastTimeout = setTimeout(() => toast.classList.remove('show'), 3000);
-        }
-
-        const cattleForm = document.getElementById('cattleForm');
-        const cattleIdInput = document.getElementById('cattleId');
-        const cattleAreteInput = document.getElementById('cattleArete');
-        const cattleRazaInput = document.getElementById('cattleRaza');
-        const cattleEdadInput = document.getElementById('cattleEdad');
-        const cattlePesoInput = document.getElementById('cattlePeso');
-        const cattleEditIdInput = document.getElementById('cattleEditId');
-
-        function clearFormErrors() {
-            ['cattleId', 'cattleArete', 'cattleRaza', 'cattleEdad', 'cattlePeso'].forEach(fieldId => {
-                document.getElementById(fieldId).classList.remove('input-error');
-                const err = document.getElementById('err-' + fieldId);
-                if (err) err.classList.remove('show');
-            });
-        }
-
-        function resetCattleForm() {
-            cattleForm.reset();
-            cattleEditIdInput.value = '';
-            clearFormErrors();
-        }
-
-        document.getElementById('btnAbrirRegistrar').addEventListener('click', () => {
-            resetCattleForm();
-            document.getElementById('modalFormTitle').textContent = 'Registrar Ganado';
-            openModal('modalForm');
-        });
-
-        tableBody.addEventListener('click', (e) => {
-            const editBtn = e.target.closest('.icon-btn.edit');
-            const deleteBtn = e.target.closest('.icon-btn.delete');
-
-            if (editBtn) {
-                const id = editBtn.dataset.id;
-                const animal = cattleData.find(a => a.id === id);
-                if (!animal) return;
-
-                resetCattleForm();
-                document.getElementById('modalFormTitle').textContent = 'Modificar Ganado';
-                cattleEditIdInput.value = animal.id;
-                cattleIdInput.value = animal.id;
-                cattleRazaInput.value = animal.raza;
-                cattleEdadInput.value = animal.edad;
-                cattlePesoInput.value = animal.peso;
-                document.getElementById('cattleEstado').value = animal.estado;
-                document.getElementById('cattleVacuna').value = animal.vacuna || '';
-
-                openModal('modalForm');
-            }
-
-            if (deleteBtn) {
-                const id = deleteBtn.dataset.id;
-                document.getElementById('deleteTargetId').textContent = id;
-                document.getElementById('btnConfirmDelete').dataset.id = id;
-                openModal('modalDelete');
-            }
-        });
-
-        cattleForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            clearFormErrors();
-
-            const id = cattleIdInput.value.trim().toUpperCase();
-            const arete = cattleAreteInput.value.trim();
-            const raza = cattleRazaInput.value.trim();
-            const edad = cattleEdadInput.value.trim();
-            const peso = cattlePesoInput.value.trim();
-            const editingId = cattleEditIdInput.value;
-
-            let hasError = false;
-
-            if (!id) {
-                document.getElementById('cattleId').classList.add('input-error');
-                document.getElementById('err-cattleId').textContent = 'El ID es obligatorio.';
-                document.getElementById('err-cattleId').classList.add('show');
-                hasError = true;
-            } else {
-                const duplicado = cattleData.some(a => a.id === id && a.id !== editingId);
-                if (duplicado) {
-                    document.getElementById('cattleId').classList.add('input-error');
-                    document.getElementById('err-cattleId').textContent = 'Ya existe un animal con ese ID.';
-                    document.getElementById('err-cattleId').classList.add('show');
-                    hasError = true;
-                }
-            }
-
-            if(!arete) {
-                document.getElementById('cattleArete').classList.add('input-error');
-                document.getElementById('err-cattleArete').textContent = 'El No. de arete es obligatorio.';
-                document.getElementById('err-cattleArete').classList.add('show');
-                hasError = true;
-            }
-
-            if (!raza) {
-                document.getElementById('cattleRaza').classList.add('input-error');
-                document.getElementById('err-cattleRaza').classList.add('show');
-                hasError = true;
-            }
-
-            if (!edad) {
-                document.getElementById('cattleEdad').classList.add('input-error');
-                document.getElementById('err-cattleEdad').classList.add('show');
-                hasError = true;
-            }
-
-            if (!peso || isNaN(peso) || Number(peso) <= 0) {
-                document.getElementById('cattlePeso').classList.add('input-error');
-                document.getElementById('err-cattlePeso').classList.add('show');
-                hasError = true;
-            }
-
-            if (hasError) return;
-
-            const nuevoAnimal = {
-                id,
-                arete,
-                raza,
-                edad,
-                peso: Number(peso),
-                estado: document.getElementById('cattleEstado').value,
-                vacuna: document.getElementById('cattleVacuna').value.trim()
-            };
-
-            if (editingId) {
-                const index = cattleData.findIndex(a => a.id === editingId);
-                cattleData[index] = nuevoAnimal;
-                showToast(`${id} actualizado correctamente.`);
-            } else {
-                cattleData.push(nuevoAnimal);
-                showToast(`${id} registrado correctamente.`);
-            }
-
-            renderTable();
-            closeModal('modalForm');
-        });
-
-        document.getElementById('btnConfirmDelete').addEventListener('click', function () {
-            const id = this.dataset.id;
-            cattleData = cattleData.filter(a => a.id !== id);
-            renderTable();
-            closeModal('modalDelete');
-            showToast(`${id} eliminado correctamente.`);
-        });
-
-        const themeToggleBtn = document.getElementById('themeToggle');
-        const themeIcon = document.getElementById('themeIcon');
-
-        function updateThemeIcon() {
-            const isLight = document.documentElement.classList.contains('light-theme');
-            themeIcon.className = isLight ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
-            themeToggleBtn.title = isLight ? 'Cambiar a tema oscuro' : 'Cambiar a tema claro';
-        }
-
-        updateThemeIcon();
-
-        themeToggleBtn.addEventListener('click', () => {
-            document.documentElement.classList.toggle('light-theme');
-            const isLight = document.documentElement.classList.contains('light-theme');
-            localStorage.setItem('oxen-theme', isLight ? 'light' : 'dark');
-            updateThemeIcon();
-        });
-
-        renderTable();
-    </script>
 
 </body>
 </html>
